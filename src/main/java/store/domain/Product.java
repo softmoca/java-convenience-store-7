@@ -5,12 +5,19 @@ public class Product {
     private final int price;
     private int promotionStock;
     private int regularStock;
+    private final Promotion promotion;
 
-    public Product(String name, int price, int promotionStock, int regularStock) {
+    public Product(String name, int price, int promotionStock,
+                   int regularStock, Promotion promotion) {
         this.name = name;
         this.price = price;
         this.promotionStock = promotionStock;
         this.regularStock = regularStock;
+        this.promotion = promotion;
+    }
+
+    public Product(String name, int price, int promotionStock, int regularStock) {
+        this(name, price, promotionStock, regularStock, null);
     }
 
     public String getName() {
@@ -29,4 +36,11 @@ public class Product {
         return quantity <= getTotalStock();
     }
 
+    public boolean hasPromotion() {
+        return promotion != null;
+    }
+
+    public Promotion getPromotion() {
+        return promotion;
+    }
 }
