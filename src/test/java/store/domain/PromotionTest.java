@@ -55,6 +55,21 @@ class PromotionTest {
         assertThat(promotion.calculateFreeCount(6)).isEqualTo(2);
     }
 
+    @Test
+    void 프로모션_적용_가능_수량_계산() {
+        Promotion promotion = new Promotion(
+                "탄산2+1", 2, 1,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31)
+        );
+
+        int promotionStock = 7;
+
+        // 7개 중 6개만 프로모션 적용 가능
+        assertThat(promotion.getApplicableQuantity(promotionStock))
+                .isEqualTo(6);
+    }
+
 
 
 
