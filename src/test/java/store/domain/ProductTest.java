@@ -2,6 +2,7 @@ package store.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 class ProductTest {
@@ -24,7 +25,19 @@ class ProductTest {
         assertThat(product.canPurchase(21)).isFalse();
     }
 
+    @Test
+    void 프로모션이_있는_상품_생성() {
+        Promotion promotion = new Promotion(
+                "탄산2+1", 2, 1,
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 12, 31)
+        );
 
+        Product product = new Product("콜라", 1000, 10, 10, promotion);
+
+        assertThat(product.hasPromotion()).isTrue();
+        assertThat(product.getPromotion()).isEqualTo(promotion);
+    }
 
 
 }
