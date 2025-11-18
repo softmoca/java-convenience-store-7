@@ -27,5 +27,10 @@ public class Promotion {
         int setCount = purchaseQuantity / setSize;
         return setCount * get;
     }
+    public int getApplicableQuantity(int availableStock) {
+        int setSize = buy + get;
+        int possibleSets = availableStock / setSize;
+        return possibleSets * setSize;
+    }
 
 }
