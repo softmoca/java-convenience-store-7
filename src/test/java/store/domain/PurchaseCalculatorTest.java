@@ -35,4 +35,15 @@ class PurchaseCalculatorTest {
         assertThat(result.getFreeQuantity()).isEqualTo(1);
         assertThat(result.getTotalQuantity()).isEqualTo(3);
     }
+
+    @Test
+    void 프로모션_수량_미달_시_추가구매_제안() {
+        // 2개만 구매 → 1개 더 추가 제안
+        PurchaseResult result = calculator.calculate(product, 2, today);
+
+        assertThat(result.shouldSuggestAddition()).isTrue();
+        assertThat(result.getSuggestedAddition()).isEqualTo(1);
+    }
+
+
 }
