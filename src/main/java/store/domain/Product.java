@@ -43,4 +43,10 @@ public class Product {
     public Promotion getPromotion() {
         return promotion;
     }
+
+    public int getPromotionStock() {
+        return promotionStock;
+    }
+
+
 }
