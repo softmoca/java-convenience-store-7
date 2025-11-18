@@ -24,4 +24,9 @@ public class Product {
     public int getTotalStock() {
         return promotionStock + regularStock;
     }
+
+    public boolean canPurchase(int quantity) {
+        return quantity <= getTotalStock();
+    }
+
 }
