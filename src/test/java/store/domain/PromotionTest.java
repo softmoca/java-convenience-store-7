@@ -37,4 +37,26 @@ class PromotionTest {
         assertThat(promotion.isAvailable(afterDate)).isFalse();
     }
 
+    @Test
+    void 투플러스원_프로모션_혜택_계산() {
+        Promotion promotion = new Promotion(
+                "탄산2+1", 2, 1,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31)
+        );
+
+        // "3개 구매하면 1개 무료"
+        assertThat(promotion.calculateFreeCount(3)).isEqualTo(1);
+
+        // "5개 구매하면? 3개만 프로모션 적용, 1개 무료"
+        assertThat(promotion.calculateFreeCount(5)).isEqualTo(1);
+
+        // "6개 구매하면? 2세트 적용, 2개 무료"
+        assertThat(promotion.calculateFreeCount(6)).isEqualTo(2);
+    }
+
+
+
+
+
 }
