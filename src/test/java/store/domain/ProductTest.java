@@ -15,4 +15,16 @@ class ProductTest {
         assertThat(product.getPrice()).isEqualTo(1000);
         assertThat(product.getTotalStock()).isEqualTo(20);
     }
+
+    @Test
+    void 재고보다_많이_구매할_수_없다() {
+        Product product = new Product("콜라", 1000, 10, 10);
+
+        assertThat(product.canPurchase(20)).isTrue();
+        assertThat(product.canPurchase(21)).isFalse();
+    }
+
+
+
+
 }
