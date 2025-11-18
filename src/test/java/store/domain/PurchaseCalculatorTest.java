@@ -15,12 +15,12 @@ class PurchaseCalculatorTest {
     @BeforeEach
     void setUp() {
         calculator = new PurchaseCalculator();
-        today = LocalDate.of(2024, 11, 15);
+        today = LocalDate.of(2025, 11, 15);
 
         Promotion promotion = new Promotion(
                 "탄산2+1", 2, 1,
-                LocalDate.of(2024, 1, 1),
-                LocalDate.of(2024, 12, 31)
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31)
         );
 
         product = new Product("콜라", 1000, 10, 10, promotion);

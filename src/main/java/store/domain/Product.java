@@ -48,5 +48,7 @@ public class Product {
         return promotionStock;
     }
 
-
+    public int getRegularStock() {
+        return regularStock;
+    }
 }
