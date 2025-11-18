@@ -21,4 +21,11 @@ public class Promotion {
     public boolean isAvailable(LocalDate date) {
         return !date.isBefore(startDate) && !date.isAfter(endDate);
     }
+
+    public int calculateFreeCount(int purchaseQuantity) {
+        int setSize = buy + get;
+        int setCount = purchaseQuantity / setSize;
+        return setCount * get;
+    }
+
 }
