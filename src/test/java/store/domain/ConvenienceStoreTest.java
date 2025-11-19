@@ -34,7 +34,7 @@ class ConvenienceStoreTest {
                 new OrderItem("물", 2)
         );
 
-        LocalDate today = LocalDate.of(2024, 11, 15);
+        LocalDate today = LocalDate.of(2025, 11, 15);
         PurchaseContext context = store.processPurchase(items, today);
 
         assertThat(context.getTotalPayAmount()).isEqualTo(3000);
