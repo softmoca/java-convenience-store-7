@@ -71,7 +71,27 @@ class PurchaseCalculatorTest {
         assertThat(result.getSuggestedAddition()).isEqualTo(1);
     }
 
+    @Test
+    void 프로모션_재고_부족시_정가_결제_확인() {
+        // 프로모션 재고 7개, 10개 구매 요청
+        Product limitedCola = new Product("콜라", 1000, 7, 10,
+                new Promotion("탄산2+1", 2, 1,
+                        LocalDate.of(2025, 1, 1), LocalDate.of(2025, 12, 31))
+        );
 
+        PurchaseResult result = calculator.calculate(limitedCola, 10, today);
+
+        // 6개는 프로모션 (4개 결제 + 2개 무료)
+        // 4개는 정가
+        assertThat(result.requiresFullPrice()).isTrue();
+        assertThat(result.getFullPriceQuantity()).isEqualTo(4);
+        assertThat(result.getPayQuantity()).isEqualTo(8);  // 4 + 4
+        assertThat(result.getFreeQuantity()).isEqualTo(2);
+
+        assertThat(result.getFullPriceMessage()).isEqualTo(
+                "현재 콜라 4개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)"
+        );
+    }
 
 
 }
