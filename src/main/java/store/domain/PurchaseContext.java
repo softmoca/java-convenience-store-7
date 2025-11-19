@@ -38,4 +38,8 @@ public class PurchaseContext {
             this.result = result;
         }
     }
+    public List<PurchaseDetail> getDetails() {
+        return new ArrayList<>(details);
+    }
+
 }

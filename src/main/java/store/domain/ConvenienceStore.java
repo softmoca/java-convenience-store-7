@@ -36,4 +36,16 @@ public class ConvenienceStore {
 
         return context;
     }
+
+    public void updateStock(PurchaseContext context) {
+        for (PurchaseContext.PurchaseDetail detail : context.getDetails()) {
+            Product product = products.get(detail.product.getName());
+            product.deductStock(detail.result.getTotalQuantity());
+        }
+    }
+
+    public Product getProduct(String name) {
+        return products.get(name);
+    }
+
 }

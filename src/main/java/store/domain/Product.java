@@ -51,4 +51,15 @@ public class Product {
     public int getRegularStock() {
         return regularStock;
     }
+
+    public void deductStock(int quantity) {
+        if (promotionStock >= quantity) { // 프로모션 재고 부터 차감
+            promotionStock -= quantity;
+        } else {
+            int remaining = quantity - promotionStock;
+            promotionStock = 0;
+            regularStock -= remaining;
+        }
+    }
+
 }
