@@ -45,5 +45,17 @@ class PurchaseCalculatorTest {
         assertThat(result.getSuggestedAddition()).isEqualTo(1);
     }
 
+    @Test
+    void 투플러스원_2개_구매시_1개_추가_제안() {
+        PurchaseResult result = calculator.calculate(product, 2, today);
+
+        assertThat(result.shouldSuggestAddition()).isTrue();
+        assertThat(result.getSuggestedAddition()).isEqualTo(1);
+        assertThat(result.getSuggestedMessage()).isEqualTo(
+                "현재 콜라은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)"
+        );
+    }
+
+
 
 }
