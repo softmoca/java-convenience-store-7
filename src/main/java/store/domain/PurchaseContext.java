@@ -1,45 +1,55 @@
 package store.domain;
 
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PurchaseContext {
-    private final List<PurchaseDetail> details = new ArrayList<>();
-    private int totalPayAmount = 0;
-    private int promotionDiscount = 0;
-    private int membershipDiscount = 0;
+    private final Map<Product, PurchaseResult> purchases = new HashMap<>();
+    private final MembershipCalculator membershipCalculator = new MembershipCalculator();
+    private boolean membershipApplied = false;
 
     public void addPurchase(Product product, PurchaseResult result) {
-        details.add(new PurchaseDetail(product, result));
-
-        int originalAmount = product.getPrice() * result.getTotalQuantity();
-        int discountAmount = product.getPrice() * result.getFreeQuantity();
-
-        totalPayAmount += (originalAmount - discountAmount);
-        promotionDiscount += discountAmount;
+        purchases.put(product, result);
     }
 
-
-    public int getTotalPayAmount() {
-        return totalPayAmount - membershipDiscount;
+    public void applyMembershipDiscount(boolean apply) {
+        this.membershipApplied = apply;
     }
 
-    public int getPromotionDiscount() {
-        return promotionDiscount;
-    }
+    public int calculateTotalAmount() {
+        int total = 0;
+        for (Map.Entry<Product, PurchaseResult> entry : purchases.entrySet()) {
+            Product product = entry.getKey();
+            PurchaseResult result = entry.getValue();
 
-    static class PurchaseDetail {
-        final Product product;
-        final PurchaseResult result;
-
-        PurchaseDetail(Product product, PurchaseResult result) {
-            this.product = product;
-            this.result = result;
+            total += product.getPrice() * result.getPayQuantity();          // 실제 결제할 금액
         }
-    }
-    public List<PurchaseDetail> getDetails() {
-        return new ArrayList<>(details);
+        return total;
     }
 
+    public int calculatePromotionDiscount() {
+        int discount = 0;
+        for (Map.Entry<Product, PurchaseResult> entry : purchases.entrySet()) {
+            Product product = entry.getKey();
+            PurchaseResult result = entry.getValue();
+
+            discount += product.getPrice() * result.getFreeQuantity();             // 무료로 받은 상품 금액
+        }
+        return discount;
+    }
+
+    public int calculateMembershipDiscount() {
+        if (!membershipApplied) {
+            return 0;
+        }
+        return membershipCalculator.calculateDiscount(purchases);
+    }
+
+    public int calculateFinalAmount() {
+        return calculateTotalAmount() - calculateMembershipDiscount();
+    }
+
+    public Map<Product, PurchaseResult> getPurchases() {
+        return new HashMap<>(purchases);
+    }
 }
