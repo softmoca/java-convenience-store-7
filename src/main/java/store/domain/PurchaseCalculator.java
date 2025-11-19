@@ -25,8 +25,16 @@ public class PurchaseCalculator {
             return suggestionResult;
         }
 
+        // 2단계 : 프로모션 재고 부족 체크
+        PurchaseResult fullPriceResult = checkFullPriceRequired(
+                product, requestQuantity, promotion, promotionStock
+        );
+        if (fullPriceResult != null) {
+            return fullPriceResult;
+        }
 
-        // 2단계 : 정상 프로모션 적용
+
+        // 3단계 : 정상 프로모션 적용
         return applyNormalPromotion(product, requestQuantity, promotion);
     }
 
@@ -50,6 +58,26 @@ public class PurchaseCalculator {
         return null;
     }
 
+    private PurchaseResult checkFullPriceRequired(Product product, int quantity,
+                                                  Promotion promotion, int promotionStock) {
+        if (quantity > promotionStock) {      // 구매 희망 수량이 프로모션 재고보다 많은 경우
+            int applicableQuantity = promotion.getApplicableQuantity(promotionStock);
+            int fullPriceQuantity = quantity - applicableQuantity;       // 정가로 구매해야 할 수량
+
+            // 프로모션 적용 부분의 무료 개수 계산
+            int freeInApplicable = promotion.calculateFreeCount(applicableQuantity);
+            // 프로모션 적용 부분의 실제 결제 개수
+            int payInApplicable = applicableQuantity - freeInApplicable;
+
+            return new PurchaseResult.Builder(product.getName(), quantity)
+                    .payQuantity(payInApplicable + fullPriceQuantity) // 프로모션 결제 + 정가 결제
+                    .freeQuantity(freeInApplicable) // 프로모션으로 받은 무료 개수
+                    .requiresFullPrice(fullPriceQuantity)    // 정가 결제 필요 수량 (사용자 확인용)
+                    .build();
+        }
+
+        return null;  // 정가 결제 필요 없음
+    }
 
     private PurchaseResult applyNormalPromotion(Product product, int quantity,
                                                 Promotion promotion) {
