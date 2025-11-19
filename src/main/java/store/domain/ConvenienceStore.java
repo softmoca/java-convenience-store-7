@@ -16,6 +16,7 @@ public class ConvenienceStore {
     }
 
     public PurchaseContext processPurchase(List<OrderItem> items, LocalDate date) {
+        validateProducts(items);
         PurchaseContext context = new PurchaseContext();
 
         for (OrderItem item : items) {
@@ -38,14 +39,30 @@ public class ConvenienceStore {
     }
 
     public void updateStock(PurchaseContext context) {
-        for (PurchaseContext.PurchaseDetail detail : context.getDetails()) {
-            Product product = products.get(detail.product.getName());
-            product.deductStock(detail.result.getTotalQuantity());
+        for (Map.Entry<Product, PurchaseResult> entry : context.getPurchases().entrySet()) {
+            Product product = products.get(entry.getKey().getName());
+            product.deductStock(entry.getValue().getTotalQuantity());
         }
     }
 
     public Product getProduct(String name) {
         return products.get(name);
     }
+
+    public Map<String, Product> getProducts() {
+        return products;
+    }
+
+
+    public void validateProducts(List<OrderItem> items) {
+        for (OrderItem item : items) {
+            if (!products.containsKey(item.getProductName())) {
+                throw new IllegalArgumentException(
+                        "[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요."
+                );
+            }
+        }
+    }
+
 
 }
