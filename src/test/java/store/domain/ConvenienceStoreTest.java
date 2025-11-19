@@ -40,4 +40,20 @@ class ConvenienceStoreTest {
         assertThat(context.getTotalPayAmount()).isEqualTo(3000);
         assertThat(context.getPromotionDiscount()).isEqualTo(1000);
     }
+
+    @Test
+    void 구매_후_재고_차감() {
+        List<OrderItem> items = List.of(new OrderItem("콜라", 3));
+
+        LocalDate today = LocalDate.of(2025, 11, 15);
+        PurchaseContext context = store.processPurchase(items, today);
+
+        store.updateStock(context);
+
+        Product cola = store.getProduct("콜라");
+        assertThat(cola.getPromotionStock()).isEqualTo(7);
+        assertThat(cola.getRegularStock()).isEqualTo(10);
+    }
+
+
 }
