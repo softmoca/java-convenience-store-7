@@ -18,4 +18,9 @@ public class OrderItem {
         return quantity;
     }
 
+    public static OrderItem parse(String input) {
+        String cleaned = input.replace("[", "").replace("]", "");
+        String[] parts = cleaned.split("-");
+        return new OrderItem(parts[0], Integer.parseInt(parts[1]));
+    }
 }
