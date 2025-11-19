@@ -2,7 +2,7 @@ package store.infrastructure;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import store.domain.Product;
@@ -16,7 +16,9 @@ public class FileParser {
 
         for (int i = 1; i < lines.length; i++) {
             String line = lines[i].trim();
-            if (line.isEmpty()) continue;
+            if (line.isEmpty()) {
+                continue;
+            }
 
             String[] parts = line.split(",");
             promotions.add(new Promotion(
@@ -32,14 +34,16 @@ public class FileParser {
     }
 
     public Map<String, Product> parseProducts(String content, Map<String, Promotion> promotionMap) {
-        Map<String, Product> products = new HashMap<>();
+        Map<String, Product> products = new LinkedHashMap<>();
         String[] lines = content.split("\n");
 
-        Map<String, ProductBuilder> builders = new HashMap<>();
+        Map<String, ProductBuilder> builders = new LinkedHashMap<>();
 
         for (int i = 1; i < lines.length; i++) {
             String line = lines[i].trim();
-            if (line.isEmpty()) continue;
+            if (line.isEmpty()) {
+                continue;
+            }
 
             String[] parts = line.split(",");
             String name = parts[0];
@@ -59,13 +63,13 @@ public class FileParser {
             }
         }
 
-
         builders.forEach((name, builder) -> {
             products.put(name, builder.build());
         });
 
         return products;
     }
+
     private static class ProductBuilder {
         private final String name;
         private final int price;
