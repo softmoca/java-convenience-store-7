@@ -56,6 +56,22 @@ class PurchaseCalculatorTest {
         );
     }
 
+    @Test
+    void 원플러스원_1개_구매시_1개_추가_제안() {
+        Promotion oneP1usOne = new Promotion(
+                "MD추천상품", 1, 1,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31)
+        );
+        Product product = new Product("오렌지주스", 1800, 9, 0, oneP1usOne);
+
+        PurchaseResult result = calculator.calculate(product, 1, today);
+
+        assertThat(result.shouldSuggestAddition()).isTrue();
+        assertThat(result.getSuggestedAddition()).isEqualTo(1);
+    }
+
+
 
 
 }
