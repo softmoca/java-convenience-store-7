@@ -37,8 +37,8 @@ class ConvenienceStoreTest {
         LocalDate today = LocalDate.of(2025, 11, 15);
         PurchaseContext context = store.processPurchase(items, today);
 
-        assertThat(context.getTotalPayAmount()).isEqualTo(3000);
-        assertThat(context.getPromotionDiscount()).isEqualTo(1000);
+        assertThat(context.calculateTotalAmount()).isEqualTo(3000);
+        assertThat(context.calculatePromotionDiscount()).isEqualTo(1000);
     }
 
     @Test

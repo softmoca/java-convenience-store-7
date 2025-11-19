@@ -59,7 +59,7 @@ class MembershipCalculatorTest {
 
         int discount = calculator.calculateDiscount(purchases);
 
-        assertThat(discount).isEqualTo(8000);  
+        assertThat(discount).isEqualTo(8000);
     }
 
 }
