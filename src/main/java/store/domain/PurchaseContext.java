@@ -52,4 +52,9 @@ public class PurchaseContext {
     public Map<Product, PurchaseResult> getPurchases() {
         return new HashMap<>(purchases);
     }
+
+    public void updatePurchase(Product product, PurchaseResult newResult) {
+        purchases.put(product, newResult);
+    }
+
 }

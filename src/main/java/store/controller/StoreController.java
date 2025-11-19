@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import store.domain.OrderItem;
 import store.domain.Product;
 import store.domain.Promotion;
 import store.domain.PurchaseContext;
+import store.domain.PurchaseResult;
 import store.domain.Receipt;
 import store.infrastructure.FileParser;
 import store.view.InputView;
@@ -81,22 +83,56 @@ public class StoreController {
             LocalDate today = DateTimes.now().toLocalDate();
             PurchaseContext context = store.processPurchase(items, today);
 
-            // 3. 멤버십 할인
+            // 3. 프로모션 질문 처리
+            handlePromotionQuestions(context);
+
+            // 4. 멤버십 할인
             boolean applyMembership = inputView.readYesNo(
                     "멤버십 할인을 받으시겠습니까? (Y/N)"
             );
             context.applyMembershipDiscount(applyMembership);
 
-            // 4. 영수증 출력
+            // 5. 영수증 출력
             Receipt receipt = new Receipt(context);
             outputView.printReceipt(receipt);
 
-            // 5. 재고 차감
+            // 6. 재고 차감
             store.updateStock(context);
 
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             processPurchase();  // 재시도
+        }
+    }
+
+    private void handlePromotionQuestions(PurchaseContext context) {
+        Map<Product, PurchaseResult> purchases = new HashMap<>(context.getPurchases());
+
+        for (Map.Entry<Product, PurchaseResult> entry : purchases.entrySet()) {
+            Product product = entry.getKey();
+            PurchaseResult result = entry.getValue();
+
+            //  추가 구매 제안
+            if (result.shouldSuggestAddition()) {
+                boolean accept = inputView.readYesNo(result.getSuggestedMessage());
+
+                if (accept) {
+                    // 추가 구매 수락 → 수량 증가
+                    PurchaseResult newResult = result.acceptAddition();
+                    context.updatePurchase(product, newResult);
+                }
+            }
+
+            //  정가 결제 확인
+            else if (result.requiresFullPrice()) {
+                boolean accept = inputView.readYesNo(result.getFullPriceMessage());
+
+                if (!accept) {
+                    // 정가 결제 거부 → 수량 감소
+                    PurchaseResult newResult = result.rejectFullPrice();
+                    context.updatePurchase(product, newResult);
+                }
+            }
         }
     }
 

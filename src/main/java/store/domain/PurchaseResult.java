@@ -72,7 +72,9 @@ public class PurchaseResult {
     }
 
     public String getSuggestedMessage() {
-        if (!suggestAddition) return null;
+        if (!suggestAddition) {
+            return null;
+        }
         return String.format(
                 "현재 %s은(는) %d개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)",
                 productName, suggestedAddition
@@ -80,11 +82,37 @@ public class PurchaseResult {
     }
 
     public String getFullPriceMessage() {
-        if (!requiresFullPrice) return null;
+        if (!requiresFullPrice) {
+            return null;
+        }
         return String.format(
                 "현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)",
                 productName, fullPriceQuantity
         );
+    }
+
+    public PurchaseResult acceptAddition() {
+        if (!suggestAddition) {
+            return this;  // 제안이 없었으면 그대로 반환
+        }
+
+        int newQuantity = requestedQuantity + suggestedAddition;  // 총 수량 증가
+        return new Builder(productName, newQuantity)
+                .payQuantity(payQuantity)                            // 결제 수량은 그대로
+                .freeQuantity(freeQuantity + suggestedAddition)      // 무료 수량 증가
+                .build();
+    }
+
+    public PurchaseResult rejectFullPrice() {
+        if (!requiresFullPrice) {
+            return this;  // 정가 결제가 없었으면 그대로 반환
+        }
+
+        int newQuantity = requestedQuantity - fullPriceQuantity;  // 정가 부분 제외
+        return new Builder(productName, newQuantity)
+                .payQuantity(payQuantity - fullPriceQuantity)        // 결제 수량 감소
+                .freeQuantity(freeQuantity)                          // 무료 수량은 그대로
+                .build();
     }
 
 
@@ -107,6 +135,12 @@ public class PurchaseResult {
     public int getSuggestedAddition() {
         return suggestedAddition;
     }
-    public boolean requiresFullPrice() { return requiresFullPrice; }
-    public int getFullPriceQuantity() { return fullPriceQuantity; }
+
+    public boolean requiresFullPrice() {
+        return requiresFullPrice;
+    }
+
+    public int getFullPriceQuantity() {
+        return fullPriceQuantity;
+    }
 }
