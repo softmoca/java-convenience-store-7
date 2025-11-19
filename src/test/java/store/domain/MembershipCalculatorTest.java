@@ -46,4 +46,20 @@ class MembershipCalculatorTest {
         assertThat(discount).isEqualTo(3000);
     }
 
+    @Test
+    void 멤버십_할인_최대_8000원() {
+        // 30000원 구매 → 9000원 할인이지만 8000원만
+        Map<Product, PurchaseResult> purchases = new HashMap<>();
+
+        Product expensive = new Product("정식도시락", 6000, 0, 10);
+        purchases.put(expensive, new PurchaseResult.Builder("정식도시락", 5)
+                .payQuantity(5)
+                .freeQuantity(0)
+                .build());
+
+        int discount = calculator.calculateDiscount(purchases);
+
+        assertThat(discount).isEqualTo(8000);  
+    }
+
 }
