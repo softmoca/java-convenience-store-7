@@ -9,7 +9,6 @@ import store.domain.vo.PurchaseResult;
 
 public class PurchaseContext {
     private final Map<Product, PurchaseResult> purchases = new LinkedHashMap<>();
-    private final MembershipCalculator membershipCalculator = new MembershipCalculator();
     private boolean membershipApplied = false;
 
     public void addPurchase(Product product, PurchaseResult result) {
@@ -46,7 +45,7 @@ public class PurchaseContext {
         if (!membershipApplied) {
             return 0;
         }
-        return membershipCalculator.calculateDiscount(purchases);
+        return MembershipCalculator.calculateDiscount(purchases);
     }
 
     public int calculateFinalAmount() {

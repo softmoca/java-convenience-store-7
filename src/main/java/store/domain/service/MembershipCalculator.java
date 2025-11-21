@@ -8,14 +8,17 @@ public class MembershipCalculator {
     private static final double DISCOUNT_RATE = 0.3;
     private static final int MAX_DISCOUNT = 8000;
 
-    public int calculateDiscount(Map<Product, PurchaseResult> purchases) {
+    private MembershipCalculator() {
+    }
+
+    public static int calculateDiscount(Map<Product, PurchaseResult> purchases) {
         int eligibleAmount = calculateEligibleAmount(purchases);
         int discount = (int) (eligibleAmount * DISCOUNT_RATE);
 
         return Math.min(discount, MAX_DISCOUNT);
     }
 
-    private int calculateEligibleAmount(Map<Product, PurchaseResult> purchases) {
+    private static int calculateEligibleAmount(Map<Product, PurchaseResult> purchases) {
         int total = 0;
 
         for (Map.Entry<Product, PurchaseResult> entry : purchases.entrySet()) {

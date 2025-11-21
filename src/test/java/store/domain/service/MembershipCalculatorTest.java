@@ -5,20 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import store.domain.entity.Product;
 import store.domain.vo.Promotion;
 import store.domain.vo.PurchaseResult;
 
 class MembershipCalculatorTest {
-
-    private MembershipCalculator calculator;
-
-    @BeforeEach
-    void setUp() {
-        calculator = new MembershipCalculator();
-    }
 
     @Test
     void 프로모션_미적용_금액만_할인() {
@@ -44,7 +36,7 @@ class MembershipCalculatorTest {
                 .freeQuantity(0)
                 .build());
 
-        int discount = calculator.calculateDiscount(purchases);
+        int discount = MembershipCalculator.calculateDiscount(purchases);
 
         assertThat(discount).isEqualTo(3000);
     }
@@ -60,7 +52,7 @@ class MembershipCalculatorTest {
                 .freeQuantity(0)
                 .build());
 
-        int discount = calculator.calculateDiscount(purchases);
+        int discount = MembershipCalculator.calculateDiscount(purchases);
 
         assertThat(discount).isEqualTo(8000);
     }
