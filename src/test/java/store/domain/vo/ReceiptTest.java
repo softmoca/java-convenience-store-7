@@ -1,7 +1,7 @@
 package store.domain.vo;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
@@ -35,34 +35,37 @@ class ReceiptTest {
         context.applyMembershipDiscount(true);
 
         Receipt receipt = new Receipt(context);
-        
-        Receipt.LineItem colaItem = receipt.getPurchaseItems().stream()
-                .filter(item -> item.getName().equals("콜라"))
-                .findFirst()
-                .orElseThrow();
 
-        Receipt.LineItem energyBarItem = receipt.getPurchaseItems().stream()
-                .filter(item -> item.getName().equals("에너지바"))
-                .findFirst()
-                .orElseThrow();
+        assertSoftly(softly -> {
+            // 구매 항목 검증
+            Receipt.LineItem colaItem = findItem(receipt, "콜라");
+            Receipt.LineItem energyBarItem = findItem(receipt, "에너지바");
 
-        // 구매 항목 검증
-        assertThat(receipt.getPurchaseItems()).hasSize(2);
-        assertThat(colaItem.getQuantity()).isEqualTo(3);
-        assertThat(colaItem.getAmount()).isEqualTo(3000);
-        assertThat(energyBarItem.getQuantity()).isEqualTo(5);
-        assertThat(energyBarItem.getAmount()).isEqualTo(10000);
+            softly.assertThat(receipt.getPurchaseItems()).hasSize(2);
+            softly.assertThat(colaItem.getQuantity()).isEqualTo(3);
+            softly.assertThat(colaItem.getAmount()).isEqualTo(3000);
+            softly.assertThat(energyBarItem.getQuantity()).isEqualTo(5);
+            softly.assertThat(energyBarItem.getAmount()).isEqualTo(10000);
 
-        // 증정 항목
-        assertThat(receipt.getFreeItems()).hasSize(1);
-        assertThat(receipt.getFreeItems().get(0).getName()).isEqualTo("콜라");
-        assertThat(receipt.getFreeItems().get(0).getQuantity()).isEqualTo(1);
+            // 증정 항목 검증
+            softly.assertThat(receipt.getFreeItems()).hasSize(1);
+            softly.assertThat(receipt.getFreeItems().get(0).getName()).isEqualTo("콜라");
+            softly.assertThat(receipt.getFreeItems().get(0).getQuantity()).isEqualTo(1);
 
-        // 금액
-        assertThat(receipt.getTotalQuantity()).isEqualTo(8);
-        assertThat(receipt.getTotalAmount()).isEqualTo(13000);
-        assertThat(receipt.getPromotionDiscount()).isEqualTo(1000);
-        assertThat(receipt.getMembershipDiscount()).isEqualTo(3000);
-        assertThat(receipt.getFinalAmount()).isEqualTo(9000);
+            // 금액 검증
+            softly.assertThat(receipt.getTotalQuantity()).isEqualTo(8);
+            softly.assertThat(receipt.getTotalAmount()).isEqualTo(13000);
+            softly.assertThat(receipt.getPromotionDiscount()).isEqualTo(1000);
+            softly.assertThat(receipt.getMembershipDiscount()).isEqualTo(3000);
+            softly.assertThat(receipt.getFinalAmount()).isEqualTo(9000);
+        });
     }
+
+    private Receipt.LineItem findItem(Receipt receipt, String name) {
+        return receipt.getPurchaseItems().stream()
+                .filter(item -> item.getName().equals(name))
+                .findFirst()
+                .orElseThrow();
+    }
+
 }
