@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import store.config.StoreInitializer;
 import store.domain.aggregate.ConvenienceStore;
 import store.domain.aggregate.PurchaseContext;
 import store.domain.entity.Product;
@@ -31,22 +32,18 @@ public class StoreController {
     }
 
     public void run() {
-        try {
-            initializeStore();
 
-            do {
-                outputView.printWelcome();
-                outputView.printProducts(store.getProducts());
+        store = StoreInitializer.initialize();
 
-                processPurchase();
+        do {
+            outputView.printWelcome();
+            outputView.printProducts(store.getProducts());
 
-            } while (inputView.readYesNo(
-                    "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)"
-            ));
+            processPurchase();
 
-        } catch (Exception e) {
-            System.out.println("[ERROR] 시스템 오류가 발생했습니다.");
-        }
+        } while (inputView.readYesNo(
+                "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)"
+        ));
     }
 
 
@@ -62,6 +59,7 @@ public class StoreController {
 
             FileParser parser = new FileParser();
             List<Promotion> promotions = parser.parsePromotions(promotionsContent);
+
             Map<String, Promotion> promotionMap = promotions.stream()
                     .collect(Collectors.toMap(Promotion::getName, p -> p));
 
