@@ -35,12 +35,23 @@ class ReceiptTest {
         context.applyMembershipDiscount(true);
 
         Receipt receipt = new Receipt(context);
+        
+        Receipt.LineItem colaItem = receipt.getPurchaseItems().stream()
+                .filter(item -> item.getName().equals("콜라"))
+                .findFirst()
+                .orElseThrow();
 
-        // 구매 항목
+        Receipt.LineItem energyBarItem = receipt.getPurchaseItems().stream()
+                .filter(item -> item.getName().equals("에너지바"))
+                .findFirst()
+                .orElseThrow();
+
+        // 구매 항목 검증
         assertThat(receipt.getPurchaseItems()).hasSize(2);
-        assertThat(receipt.getPurchaseItems().get(1).getName()).isEqualTo("콜라");
-        assertThat(receipt.getPurchaseItems().get(1).getQuantity()).isEqualTo(3);
-        assertThat(receipt.getPurchaseItems().get(1).getAmount()).isEqualTo(3000);
+        assertThat(colaItem.getQuantity()).isEqualTo(3);
+        assertThat(colaItem.getAmount()).isEqualTo(3000);
+        assertThat(energyBarItem.getQuantity()).isEqualTo(5);
+        assertThat(energyBarItem.getAmount()).isEqualTo(10000);
 
         // 증정 항목
         assertThat(receipt.getFreeItems()).hasSize(1);
