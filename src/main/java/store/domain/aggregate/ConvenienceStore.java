@@ -2,6 +2,7 @@ package store.domain.aggregate;
 
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,12 +48,9 @@ public class ConvenienceStore {
         }
     }
 
-    public Product getProduct(String name) {
-        return products.get(name);
-    }
 
     public Map<String, Product> getProducts() {
-        return products;
+        return Collections.unmodifiableMap(products);
     }
 
 
