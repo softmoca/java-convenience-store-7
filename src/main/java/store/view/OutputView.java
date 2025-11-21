@@ -7,19 +7,19 @@ import store.domain.vo.Receipt;
 
 public class OutputView {
 
-    public void printWelcome() {
+    public static void printWelcome() {
         System.out.println("안녕하세요. W편의점입니다.");
         System.out.println("현재 보유하고 있는 상품입니다.");
         System.out.println();
     }
 
-    public void printProducts(Map<String, Product> products) {
+    public static void printProducts(Map<String, Product> products) {
         products.values()
-                .forEach(this::printProduct);
+                .forEach(OutputView::printProduct);
         System.out.println();
     }
 
-    private void printProduct(Product product) {
+    private static void printProduct(Product product) {
         if (product.hasPromotion() && product.getPromotionStock() > 0) {
             System.out.printf("- %s %,d원 %d개 %s%n",
                     product.getName(),
@@ -50,7 +50,7 @@ public class OutputView {
         }
     }
 
-    public void printReceipt(Receipt receipt) {
+    public static void printReceipt(Receipt receipt) {
         System.out.println("===========W 편의점=============");
         System.out.println("상품명\t\t수량\t금액");
 

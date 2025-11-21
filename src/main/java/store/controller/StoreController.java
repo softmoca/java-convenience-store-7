@@ -22,26 +22,21 @@ import store.view.InputView;
 import store.view.OutputView;
 
 public class StoreController {
-    private final InputView inputView;
-    private final OutputView outputView;
+
     private ConvenienceStore store;
 
-    public StoreController() {
-        this.inputView = new InputView();
-        this.outputView = new OutputView();
-    }
 
     public void run() {
 
         store = StoreInitializer.initialize();
 
         do {
-            outputView.printWelcome();
-            outputView.printProducts(store.getProducts());
+            OutputView.printWelcome();
+            OutputView.printProducts(store.getProducts());
 
             processPurchase();
 
-        } while (inputView.readYesNo(
+        } while (InputView.readYesNo(
                 "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)"
         ));
     }
@@ -75,7 +70,7 @@ public class StoreController {
     private void processPurchase() {
         try {
             // 1. 구매 항목 입력
-            List<OrderItem> items = inputView.readOrderItems();
+            List<OrderItem> items = InputView.readOrderItems();
 
             // 2. 구매 처리
             LocalDate today = DateTimes.now().toLocalDate();
@@ -85,14 +80,14 @@ public class StoreController {
             handlePromotionQuestions(context);
 
             // 4. 멤버십 할인
-            boolean applyMembership = inputView.readYesNo(
+            boolean applyMembership = InputView.readYesNo(
                     "멤버십 할인을 받으시겠습니까? (Y/N)"
             );
             context.applyMembershipDiscount(applyMembership);
 
             // 5. 영수증 출력
             Receipt receipt = new Receipt(context);
-            outputView.printReceipt(receipt);
+            OutputView.printReceipt(receipt);
 
             // 6. 재고 차감
             store.updateStock(context);
@@ -112,7 +107,7 @@ public class StoreController {
 
             //  추가 구매 제안
             if (result.shouldSuggestAddition()) {
-                boolean accept = inputView.readYesNo(result.getSuggestedMessage());
+                boolean accept = InputView.readYesNo(result.getSuggestedMessage());
 
                 if (accept) {
                     // 추가 구매 수락 → 수량 증가
@@ -123,7 +118,7 @@ public class StoreController {
 
             //  정가 결제 확인
             else if (result.requiresFullPrice()) {
-                boolean accept = inputView.readYesNo(result.getFullPriceMessage());
+                boolean accept = InputView.readYesNo(result.getFullPriceMessage());
 
                 if (!accept) {
                     // 정가 결제 거부 → 수량 감소

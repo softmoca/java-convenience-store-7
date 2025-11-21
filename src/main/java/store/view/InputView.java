@@ -7,7 +7,7 @@ import store.domain.vo.OrderItem;
 
 public class InputView {
 
-    public List<OrderItem> readOrderItems() {
+    public static List<OrderItem> readOrderItems() {
         System.out.println("구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])");
         String input = Console.readLine();
 
@@ -21,7 +21,7 @@ public class InputView {
         }
     }
 
-    private List<OrderItem> parseOrderItems(String input) {
+    private static List<OrderItem> parseOrderItems(String input) {
         List<OrderItem> items = new ArrayList<>();
         String[] parts = input.split(",");
 
@@ -31,7 +31,7 @@ public class InputView {
         return items;
     }
 
-    public boolean readYesNo(String message) {
+    public static boolean readYesNo(String message) {
         System.out.println(message);
         String input = Console.readLine().toUpperCase();
         InputValidator.validateYesNo(input);
