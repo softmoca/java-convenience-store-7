@@ -7,6 +7,9 @@ import store.domain.vo.PurchaseResult;
 
 public class PurchaseCalculator {
 
+    private PurchaseCalculator() {
+    }
+
     public static PurchaseResult calculate(Product product, int requestQuantity, LocalDate date) {
 
         // 프로모션이 없거나 기간이 아니면 일반 구매
