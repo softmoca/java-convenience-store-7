@@ -2,7 +2,7 @@ package store.domain.aggregate;
 
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import store.domain.entity.Product;
@@ -15,7 +15,7 @@ public class ConvenienceStore {
     private final PurchaseCalculator calculator;
 
     public ConvenienceStore(Map<String, Product> products) {
-        this.products = new HashMap<>(products);
+        this.products = new LinkedHashMap<>(products);
         this.calculator = new PurchaseCalculator();
     }
 

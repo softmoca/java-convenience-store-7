@@ -1,7 +1,6 @@
 package store.view;
 
 
-import java.util.Comparator;
 import java.util.Map;
 import store.domain.entity.Product;
 import store.domain.vo.Receipt;
@@ -15,8 +14,7 @@ public class OutputView {
     }
 
     public void printProducts(Map<String, Product> products) {
-        products.values().stream()
-                .sorted(Comparator.comparing(Product::getName))
+        products.values()
                 .forEach(this::printProduct);
         System.out.println();
     }

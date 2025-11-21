@@ -1,13 +1,14 @@
 package store.domain.aggregate;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import store.domain.entity.Product;
 import store.domain.service.MembershipCalculator;
 import store.domain.vo.PurchaseResult;
 
 public class PurchaseContext {
-    private final Map<Product, PurchaseResult> purchases = new HashMap<>();
+    private final Map<Product, PurchaseResult> purchases = new LinkedHashMap<>();
     private final MembershipCalculator membershipCalculator = new MembershipCalculator();
     private boolean membershipApplied = false;
 
