@@ -1,10 +1,12 @@
-package store.domain;
+package store.domain.vo;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import store.domain.aggregate.PurchaseContext;
+import store.domain.entity.Product;
 
 class ReceiptTest {
 

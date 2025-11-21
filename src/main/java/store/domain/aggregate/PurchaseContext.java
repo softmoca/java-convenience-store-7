@@ -1,7 +1,10 @@
-package store.domain;
+package store.domain.aggregate;
 
 import java.util.HashMap;
 import java.util.Map;
+import store.domain.entity.Product;
+import store.domain.service.MembershipCalculator;
+import store.domain.vo.PurchaseResult;
 
 public class PurchaseContext {
     private final Map<Product, PurchaseResult> purchases = new HashMap<>();

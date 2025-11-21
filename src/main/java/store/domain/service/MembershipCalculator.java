@@ -1,6 +1,8 @@
-package store.domain;
+package store.domain.service;
 
 import java.util.Map;
+import store.domain.entity.Product;
+import store.domain.vo.PurchaseResult;
 
 public class MembershipCalculator {
     private static final double DISCOUNT_RATE = 0.3;
@@ -8,7 +10,7 @@ public class MembershipCalculator {
 
     public int calculateDiscount(Map<Product, PurchaseResult> purchases) {
         int eligibleAmount = calculateEligibleAmount(purchases);
-        int discount = (int)(eligibleAmount * DISCOUNT_RATE);
+        int discount = (int) (eligibleAmount * DISCOUNT_RATE);
 
         return Math.min(discount, MAX_DISCOUNT);
     }

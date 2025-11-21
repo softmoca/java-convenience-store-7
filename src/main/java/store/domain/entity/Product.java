@@ -1,4 +1,6 @@
-package store.domain;
+package store.domain.entity;
+
+import store.domain.vo.Promotion;
 
 public class Product {
     private final String name;

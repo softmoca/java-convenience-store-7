@@ -1,4 +1,4 @@
-package store.domain;
+package store.domain.aggregate;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import store.domain.entity.Product;
+import store.domain.vo.OrderItem;
+import store.domain.vo.Promotion;
 
 class ConvenienceStoreTest {
 

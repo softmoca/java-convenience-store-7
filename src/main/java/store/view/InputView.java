@@ -3,7 +3,7 @@ package store.view;
 import camp.nextstep.edu.missionutils.Console;
 import java.util.ArrayList;
 import java.util.List;
-import store.domain.OrderItem;
+import store.domain.vo.OrderItem;
 
 public class InputView {
 

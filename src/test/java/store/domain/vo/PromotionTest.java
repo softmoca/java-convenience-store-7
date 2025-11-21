@@ -1,4 +1,4 @@
-package store.domain;
+package store.domain.vo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,9 +69,6 @@ class PromotionTest {
         assertThat(promotion.getApplicableQuantity(promotionStock))
                 .isEqualTo(6);
     }
-
-
-
 
 
 }

@@ -1,9 +1,11 @@
-package store.domain;
+package store.domain.entitiy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import store.domain.entity.Product;
+import store.domain.vo.Promotion;
 
 class ProductTest {
 

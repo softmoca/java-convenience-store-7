@@ -3,8 +3,8 @@ package store.view;
 
 import java.util.Comparator;
 import java.util.Map;
-import store.domain.Product;
-import store.domain.Receipt;
+import store.domain.entity.Product;
+import store.domain.vo.Receipt;
 
 public class OutputView {
 

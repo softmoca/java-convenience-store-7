@@ -1,10 +1,14 @@
-package store.domain;
+package store.domain.aggregate;
 
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import store.domain.entity.Product;
+import store.domain.service.PurchaseCalculator;
+import store.domain.vo.OrderItem;
+import store.domain.vo.PurchaseResult;
 
 public class ConvenienceStore {
     private final Map<String, Product> products;

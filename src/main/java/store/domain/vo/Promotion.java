@@ -1,4 +1,4 @@
-package store.domain;
+package store.domain.vo;
 
 import java.time.LocalDate;
 

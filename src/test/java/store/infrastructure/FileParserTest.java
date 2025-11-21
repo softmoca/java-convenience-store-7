@@ -7,18 +7,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import store.domain.Product;
-import store.domain.Promotion;
+import store.domain.entity.Product;
+import store.domain.vo.Promotion;
 
 class FileParserTest {
 
     @Test
     void 프로모션_파일_파싱() {
         String content = """
-            name,buy,get,start_date,end_date
-            탄산2+1,2,1,2025-01-01,2025-12-31
-            MD추천상품,1,1,2025-01-01,2025-12-31
-            """;
+                name,buy,get,start_date,end_date
+                탄산2+1,2,1,2025-01-01,2025-12-31
+                MD추천상품,1,1,2025-01-01,2025-12-31
+                """;
 
         FileParser parser = new FileParser();
         List<Promotion> promotions = parser.parsePromotions(content);
@@ -31,12 +31,12 @@ class FileParserTest {
     @Test
     void 상품_파일_파싱() {
         String content = """
-        name,price,quantity,promotion
-        콜라,1000,10,탄산2+1
-        콜라,1000,10,null
-        사이다,1000,8,탄산2+1
-        사이다,1000,7,null
-        """;
+                name,price,quantity,promotion
+                콜라,1000,10,탄산2+1
+                콜라,1000,10,null
+                사이다,1000,8,탄산2+1
+                사이다,1000,7,null
+                """;
 
         Map<String, Promotion> promotionMap = new HashMap<>();
         Promotion promo = new Promotion("탄산2+1", 2, 1,
@@ -51,8 +51,6 @@ class FileParserTest {
         assertThat(cola.getPromotionStock()).isEqualTo(10);
         assertThat(cola.getRegularStock()).isEqualTo(10);
     }
-
-
 
 
 }

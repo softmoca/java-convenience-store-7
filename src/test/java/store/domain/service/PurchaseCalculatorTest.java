@@ -1,10 +1,13 @@
-package store.domain;
+package store.domain.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import store.domain.entity.Product;
+import store.domain.vo.Promotion;
+import store.domain.vo.PurchaseResult;
 
 class PurchaseCalculatorTest {
 

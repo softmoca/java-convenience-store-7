@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import store.domain.Product;
-import store.domain.Promotion;
+import store.domain.entity.Product;
+import store.domain.vo.Promotion;
 
 public class FileParser {
 

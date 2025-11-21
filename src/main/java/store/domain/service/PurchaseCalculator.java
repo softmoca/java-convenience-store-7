@@ -1,6 +1,9 @@
-package store.domain;
+package store.domain.service;
 
 import java.time.LocalDate;
+import store.domain.entity.Product;
+import store.domain.vo.Promotion;
+import store.domain.vo.PurchaseResult;
 
 public class PurchaseCalculator {
 
@@ -33,7 +36,6 @@ public class PurchaseCalculator {
             return fullPriceResult;
         }
 
-
         // 3단계 : 정상 프로모션 적용
         return applyNormalPromotion(product, requestQuantity, promotion);
     }
@@ -42,7 +44,6 @@ public class PurchaseCalculator {
                                            Promotion promotion, int promotionStock) {
         int setSize = promotion.getBuy() + promotion.getGet();
         int remainder = quantity % setSize;
-
 
         if (remainder == promotion.getBuy()) {        // 딱 buy개만 구매하는 경우
             int totalNeeded = quantity + promotion.getGet(); // get개를 추가하면 한 세트 완성

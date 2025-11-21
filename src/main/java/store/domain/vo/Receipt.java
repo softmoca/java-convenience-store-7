@@ -1,8 +1,10 @@
-package store.domain;
+package store.domain.vo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import store.domain.aggregate.PurchaseContext;
+import store.domain.entity.Product;
 
 public class Receipt {
     private final List<LineItem> purchaseItems = new ArrayList<>();
@@ -67,15 +69,40 @@ public class Receipt {
             this.amount = amount;
         }
 
-        public String getName() { return name; }
-        public int getQuantity() { return quantity; }
-        public int getAmount() { return amount; }
+        public String getName() {
+            return name;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public int getAmount() {
+            return amount;
+        }
     }
 
-    public List<LineItem> getPurchaseItems() { return purchaseItems; }
-    public List<LineItem> getFreeItems() { return freeItems; }
-    public int getTotalAmount() { return totalAmount; }
-    public int getPromotionDiscount() { return promotionDiscount; }
-    public int getMembershipDiscount() { return membershipDiscount; }
-    public int getFinalAmount() { return finalAmount; }
+    public List<LineItem> getPurchaseItems() {
+        return purchaseItems;
+    }
+
+    public List<LineItem> getFreeItems() {
+        return freeItems;
+    }
+
+    public int getTotalAmount() {
+        return totalAmount;
+    }
+
+    public int getPromotionDiscount() {
+        return promotionDiscount;
+    }
+
+    public int getMembershipDiscount() {
+        return membershipDiscount;
+    }
+
+    public int getFinalAmount() {
+        return finalAmount;
+    }
 }
