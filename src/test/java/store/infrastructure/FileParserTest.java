@@ -20,8 +20,7 @@ class FileParserTest {
                 MD추천상품,1,1,2025-01-01,2025-12-31
                 """;
 
-        FileParser parser = new FileParser();
-        List<Promotion> promotions = parser.parsePromotions(content);
+        List<Promotion> promotions = FileParser.parsePromotions(content);
 
         assertThat(promotions).hasSize(2);
         assertThat(promotions.get(0).getName()).isEqualTo("탄산2+1");
@@ -43,8 +42,7 @@ class FileParserTest {
                 LocalDate.of(2025, 1, 1), LocalDate.of(2025, 12, 31));
         promotionMap.put("탄산2+1", promo);
 
-        FileParser parser = new FileParser();
-        Map<String, Product> products = parser.parseProducts(content, promotionMap);
+        Map<String, Product> products = FileParser.parseProducts(content, promotionMap);
 
         assertThat(products).containsKey("콜라");
         Product cola = products.get("콜라");
