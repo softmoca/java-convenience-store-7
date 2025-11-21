@@ -12,11 +12,9 @@ import store.domain.vo.PurchaseResult;
 
 public class ConvenienceStore {
     private final Map<String, Product> products;
-    private final PurchaseCalculator calculator;
 
     public ConvenienceStore(Map<String, Product> products) {
         this.products = new LinkedHashMap<>(products);
-        this.calculator = new PurchaseCalculator();
     }
 
     public PurchaseContext processPurchase(List<OrderItem> items, LocalDate date) {
@@ -32,7 +30,7 @@ public class ConvenienceStore {
                 );
             }
 
-            PurchaseResult result = calculator.calculate(
+            PurchaseResult result = PurchaseCalculator.calculate(
                     product, item.getQuantity(), date
             );
 

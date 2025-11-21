@@ -7,7 +7,7 @@ import store.domain.vo.PurchaseResult;
 
 public class PurchaseCalculator {
 
-    public PurchaseResult calculate(Product product, int requestQuantity, LocalDate date) {
+    public static PurchaseResult calculate(Product product, int requestQuantity, LocalDate date) {
 
         // 프로모션이 없거나 기간이 아니면 일반 구매
         if (!product.hasPromotion() || !product.getPromotion().isAvailable(date)) {
@@ -40,8 +40,8 @@ public class PurchaseCalculator {
         return applyNormalPromotion(product, requestQuantity, promotion);
     }
 
-    private PurchaseResult checkSuggestion(Product product, int quantity,
-                                           Promotion promotion, int promotionStock) {
+    private static PurchaseResult checkSuggestion(Product product, int quantity,
+                                                  Promotion promotion, int promotionStock) {
         int setSize = promotion.getBuy() + promotion.getGet();
         int remainder = quantity % setSize;
 
@@ -59,8 +59,8 @@ public class PurchaseCalculator {
         return null;
     }
 
-    private PurchaseResult checkFullPriceRequired(Product product, int quantity,
-                                                  Promotion promotion, int promotionStock) {
+    private static PurchaseResult checkFullPriceRequired(Product product, int quantity,
+                                                         Promotion promotion, int promotionStock) {
         if (quantity > promotionStock) {      // 구매 희망 수량이 프로모션 재고보다 많은 경우
             int applicableQuantity = promotion.getApplicableQuantity(promotionStock);
             int fullPriceQuantity = quantity - applicableQuantity;       // 정가로 구매해야 할 수량
@@ -80,8 +80,8 @@ public class PurchaseCalculator {
         return null;  // 정가 결제 필요 없음
     }
 
-    private PurchaseResult applyNormalPromotion(Product product, int quantity,
-                                                Promotion promotion) {
+    private static PurchaseResult applyNormalPromotion(Product product, int quantity,
+                                                       Promotion promotion) {
         int freeCount = promotion.calculateFreeCount(quantity);
 
         return new PurchaseResult.Builder(product.getName(), quantity)

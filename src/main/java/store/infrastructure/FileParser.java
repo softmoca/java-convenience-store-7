@@ -13,7 +13,6 @@ public final class FileParser {
     private FileParser() {
     }
 
-
     public static List<Promotion> parsePromotions(String content) {
         List<Promotion> promotions = new ArrayList<>();
         String[] lines = content.split("\n");
