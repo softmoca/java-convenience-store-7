@@ -8,9 +8,13 @@ import java.util.Map;
 import store.domain.entity.Product;
 import store.domain.vo.Promotion;
 
-public class FileParser {
+public final class FileParser {
 
-    public List<Promotion> parsePromotions(String content) {
+    private FileParser() {
+    }
+
+
+    public static List<Promotion> parsePromotions(String content) {
         List<Promotion> promotions = new ArrayList<>();
         String[] lines = content.split("\n");
 
@@ -33,7 +37,7 @@ public class FileParser {
         return promotions;
     }
 
-    public Map<String, Product> parseProducts(String content, Map<String, Promotion> promotionMap) {
+    public static Map<String, Product> parseProducts(String content, Map<String, Promotion> promotionMap) {
         Map<String, Product> products = new LinkedHashMap<>();
         String[] lines = content.split("\n");
 

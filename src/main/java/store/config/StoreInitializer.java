@@ -23,13 +23,12 @@ public final class StoreInitializer {
             String promotionsContent = Files.readString(Paths.get(PROMOTIONS_FILE));
             String productsContent = Files.readString(Paths.get(PRODUCTS_FILE));
 
-            FileParser parser = new FileParser();
-            List<Promotion> promotions = parser.parsePromotions(promotionsContent);
+            List<Promotion> promotions = FileParser.parsePromotions(promotionsContent);
 
             Map<String, Promotion> promotionMap = promotions.stream()
                     .collect(Collectors.toMap(Promotion::getName, p -> p));
 
-            Map<String, Product> products = parser.parseProducts(productsContent, promotionMap);
+            Map<String, Product> products = FileParser.parseProducts(productsContent, promotionMap);
 
             return new ConvenienceStore(products);
 

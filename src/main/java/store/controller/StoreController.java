@@ -1,30 +1,23 @@
 package store.controller;
 
 import camp.nextstep.edu.missionutils.DateTimes;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import store.config.StoreInitializer;
 import store.domain.aggregate.ConvenienceStore;
 import store.domain.aggregate.PurchaseContext;
 import store.domain.entity.Product;
 import store.domain.vo.OrderItem;
-import store.domain.vo.Promotion;
 import store.domain.vo.PurchaseResult;
 import store.domain.vo.Receipt;
-import store.infrastructure.FileParser;
 import store.view.InputView;
 import store.view.OutputView;
 
 public class StoreController {
 
     private ConvenienceStore store;
-
 
     public void run() {
 
@@ -39,32 +32,6 @@ public class StoreController {
         } while (InputView.readYesNo(
                 "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)"
         ));
-    }
-
-
-    private void initializeStore() {
-        try {
-            // 파일 읽기
-            String promotionsContent = Files.readString(
-                    Paths.get("src/main/resources/promotions.md")
-            );
-            String productsContent = Files.readString(
-                    Paths.get("src/main/resources/products.md")
-            );
-
-            FileParser parser = new FileParser();
-            List<Promotion> promotions = parser.parsePromotions(promotionsContent);
-
-            Map<String, Promotion> promotionMap = promotions.stream()
-                    .collect(Collectors.toMap(Promotion::getName, p -> p));
-
-            Map<String, Product> products = parser.parseProducts(productsContent, promotionMap);
-
-            store = new ConvenienceStore(products);
-
-        } catch (IOException e) {
-            throw new IllegalStateException("파일을 읽을 수 없습니다.");
-        }
     }
 
     private void processPurchase() {
