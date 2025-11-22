@@ -9,6 +9,16 @@ import store.domain.vo.OrderItem;
 public class InputView {
 
     public static List<OrderItem> readOrderItems() {
+        while (true) {
+            try {
+                return tryReadOrderItems();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private static List<OrderItem> tryReadOrderItems() {
         System.out.println("구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])");
         String input = Console.readLine();
 
@@ -29,6 +39,7 @@ public class InputView {
         }
         return items;
     }
+
 
     public static boolean readYesNo(String message) {
         System.out.println(message);
