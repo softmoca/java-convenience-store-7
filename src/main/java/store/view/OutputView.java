@@ -19,62 +19,111 @@ public class OutputView {
         System.out.println();
     }
 
+
     private static void printProduct(Product product) {
-        if (product.hasPromotion() && product.getPromotionStock() > 0) {
-            System.out.printf("- %s %,d원 %d개 %s%n",
-                    product.getName(),
-                    product.getPrice(),
-                    product.getPromotionStock(),
-                    product.getPromotion().getName()
-            );
-        } else if (product.hasPromotion()) {
-            System.out.printf("- %s %,d원 재고 없음 %s%n",
-                    product.getName(),
-                    product.getPrice(),
-                    product.getPromotion().getName()
-            );
+        printPromotionStock(product);
+        printRegularStock(product);
+    }
+
+
+    private static void printPromotionStock(Product product) {
+        if (!product.hasPromotion()) {
+            return;
         }
 
-        // 일반 재고 출력
+        if (product.getPromotionStock() > 0) {
+            printPromotionStockAvailable(product);
+            return;
+        }
+
+        printPromotionStockEmpty(product);
+    }
+
+    private static void printPromotionStockAvailable(Product product) {
+        System.out.printf("- %s %,d원 %d개 %s%n",
+                product.getName(),
+                product.getPrice(),
+                product.getPromotionStock(),
+                product.getPromotion().getName()
+        );
+    }
+
+    private static void printPromotionStockEmpty(Product product) {
+        System.out.printf("- %s %,d원 재고 없음 %s%n",
+                product.getName(),
+                product.getPrice(),
+                product.getPromotion().getName()
+        );
+    }
+
+
+    private static void printRegularStock(Product product) {
         if (product.getRegularStock() > 0) {
-            System.out.printf("- %s %,d원 %d개%n",
-                    product.getName(),
-                    product.getPrice(),
-                    product.getRegularStock()
-            );
-        } else if (!product.hasPromotion() || product.getRegularStock() == 0) {
-            System.out.printf("- %s %,d원 재고 없음%n",
-                    product.getName(),
-                    product.getPrice()
-            );
+            printRegularStockAvailable(product);
+            return;
+        }
+
+        if (!product.hasPromotion() || product.getRegularStock() == 0) {
+            printRegularStockEmpty(product);
         }
     }
 
+    private static void printRegularStockAvailable(Product product) {
+        System.out.printf("- %s %,d원 %d개%n",
+                product.getName(),
+                product.getPrice(),
+                product.getRegularStock()
+        );
+    }
+
+    private static void printRegularStockEmpty(Product product) {
+        System.out.printf("- %s %,d원 재고 없음%n",
+                product.getName(),
+                product.getPrice()
+        );
+    }
+
+
     public static void printReceipt(Receipt receipt) {
+        printHeader();
+        printPurchaseItems(receipt);
+        printFreeItems(receipt);
+        printSummary(receipt);
+        System.out.println();
+    }
+
+    private static void printHeader() {
         System.out.println("===========W 편의점=============");
         System.out.println("상품명\t\t수량\t금액");
+    }
 
-        // 구매 내역
-        receipt.getPurchaseItems().forEach(item -> {
-            System.out.printf("%s\t\t%d\t%,d%n",
-                    item.getName(),
-                    item.getQuantity(),
-                    item.getAmount()
-            );
-        });
-
-        // 증정 내역
-        if (!receipt.getFreeItems().isEmpty()) {
-            System.out.println("===========증\t정=============");
-            receipt.getFreeItems().forEach(item -> {
-                System.out.printf("%s\t\t%d%n",
+    private static void printPurchaseItems(Receipt receipt) {
+        receipt.getPurchaseItems().forEach(item ->
+                System.out.printf("%s\t\t%d\t%,d%n",
                         item.getName(),
-                        item.getQuantity()
-                );
-            });
+                        item.getQuantity(),
+                        item.getAmount()
+                )
+        );
+    }
+
+    private static void printFreeItems(Receipt receipt) {
+        if (receipt.getFreeItems().isEmpty()) {
+            return;
         }
 
-        // 금액 정보
+        System.out.println("===========증\t정=============");
+        receipt.getFreeItems().forEach(OutputView::printFreeItem);
+    }
+
+    private static void printFreeItem(Receipt.LineItem item) {
+        System.out.printf("%s\t\t%d%n",
+                item.getName(),
+                item.getQuantity()
+        );
+    }
+
+    private static void printSummary(Receipt receipt) {
         System.out.println("==============================");
         System.out.printf("총구매액\t\t%d\t%,d%n",
                 receipt.getTotalQuantity(),
@@ -83,6 +132,6 @@ public class OutputView {
         System.out.printf("행사할인\t\t\t-%,d%n", receipt.getPromotionDiscount());
         System.out.printf("멤버십할인\t\t\t-%,d%n", receipt.getMembershipDiscount());
         System.out.printf("내실돈\t\t\t %,d%n", receipt.getFinalAmount());
-        System.out.println();
     }
+
 }
