@@ -3,6 +3,7 @@ package store.view;
 import camp.nextstep.edu.missionutils.Console;
 import java.util.ArrayList;
 import java.util.List;
+import store.constant.ErrorMessage;
 import store.domain.vo.OrderItem;
 
 public class InputView {
@@ -15,9 +16,7 @@ public class InputView {
             InputValidator.validateOrderInput(input);
             return parseOrderItems(input);
         } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    "[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요."
-            );
+            throw new IllegalArgumentException(ErrorMessage.INVALID_FORMAT.getMessage());
         }
     }
 
