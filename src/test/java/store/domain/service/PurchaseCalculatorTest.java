@@ -89,5 +89,21 @@ class PurchaseCalculatorTest {
 
     }
 
+    @Test
+    void 프로모션_기간이_지난_상품은_정가_계산() {
+        // given
+        LocalDate expiredDate = LocalDate.of(2024, 1, 1);
+        Promotion expiredPromo = new Promotion("만료프로모션", 2, 1,
+                LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31));
+        Product product = new Product("콜라", 1000, 10, 10, expiredPromo);
+
+        // when
+        PurchaseResult result = PurchaseCalculator.calculate(product, 3, expiredDate);
+
+        // then
+        assertThat(result.getFreeQuantity()).isEqualTo(0);
+        assertThat(result.getPayQuantity()).isEqualTo(3);
+    }
+
 
 }
