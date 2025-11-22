@@ -15,36 +15,50 @@ public class Receipt {
     private final int finalAmount;
 
     public Receipt(PurchaseContext context) {
-        for (Map.Entry<Product, PurchaseResult> entry : context.getPurchases().entrySet()) {
-            Product product = entry.getKey();
-            PurchaseResult result = entry.getValue();
-
-            // 구매 항목 (전체 수량 표시)
-            int totalQuantity = result.getPayQuantity() + result.getFreeQuantity();
-            if (totalQuantity > 0) {
-                purchaseItems.add(new LineItem(
-                        product.getName(),
-                        totalQuantity,
-                        product.getPrice() * totalQuantity
-                ));
-            }
-
-            // 증정 항목
-            if (result.getFreeQuantity() > 0) {
-                freeItems.add(new LineItem(
-                        product.getName(),
-                        result.getFreeQuantity(),
-                        0  // 증정품은 금액 표시 안함
-                ));
-            }
-        }
-
-        // 금액 계산
+        initializeItems(context);
         this.totalAmount = calculateTotalAmount();
         this.promotionDiscount = context.calculatePromotionDiscount();
         this.membershipDiscount = context.calculateMembershipDiscount();
         this.finalAmount = context.calculateFinalAmount();
     }
+
+    private void initializeItems(PurchaseContext context) {
+        for (Map.Entry<Product, PurchaseResult> entry : context.getPurchases().entrySet()) {
+            addItemsFromEntry(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void addItemsFromEntry(Product product, PurchaseResult result) {
+        addPurchaseItem(product, result);
+        addFreeItem(product, result);
+    }
+
+    private void addPurchaseItem(Product product, PurchaseResult result) {
+        int totalQuantity = result.getTotalQuantity();
+
+        if (totalQuantity <= 0) {
+            return;
+        }
+
+        purchaseItems.add(new LineItem(
+                product.getName(),
+                totalQuantity,
+                product.getPrice() * totalQuantity
+        ));
+    }
+
+    private void addFreeItem(Product product, PurchaseResult result) {
+        if (result.getFreeQuantity() <= 0) {
+            return;
+        }
+
+        freeItems.add(new LineItem(
+                product.getName(),
+                result.getFreeQuantity(),
+                0
+        ));
+    }
+
 
     private int calculateTotalAmount() {
         return purchaseItems.stream()
