@@ -1,6 +1,6 @@
 package store.domain.aggregate;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import store.domain.entity.Product;
@@ -25,7 +25,7 @@ public class PurchaseContext {
             Product product = entry.getKey();
             PurchaseResult result = entry.getValue();
 
-            total += product.getPrice() * result.getPayQuantity();          // 실제 결제할 금액
+            total += product.getPrice() * result.getPayQuantity();
         }
         return total;
     }
@@ -36,7 +36,7 @@ public class PurchaseContext {
             Product product = entry.getKey();
             PurchaseResult result = entry.getValue();
 
-            discount += product.getPrice() * result.getFreeQuantity();             // 무료로 받은 상품 금액
+            discount += product.getPrice() * result.getFreeQuantity();
         }
         return discount;
     }
@@ -53,7 +53,7 @@ public class PurchaseContext {
     }
 
     public Map<Product, PurchaseResult> getPurchases() {
-        return new HashMap<>(purchases);
+        return Collections.unmodifiableMap(new LinkedHashMap<>(purchases));
     }
 
     public void updatePurchase(Product product, PurchaseResult newResult) {

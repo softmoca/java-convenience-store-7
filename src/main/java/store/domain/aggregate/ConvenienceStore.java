@@ -57,7 +57,7 @@ public class ConvenienceStore {
 
 
     public Map<String, Product> getProducts() {
-        return Collections.unmodifiableMap(products);
+        return Collections.unmodifiableMap(new LinkedHashMap<>(products));
     }
 
 
