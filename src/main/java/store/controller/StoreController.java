@@ -36,8 +36,7 @@ public class StoreController {
     }
 
     private void processPurchase() {
-        List<OrderItem> items = InputView.readOrderItems();
-        PurchaseContext context = createPurchaseContext(items);
+        PurchaseContext context = createPurchaseContext();
 
         handlePromotionQuestions(context);
         applyMembershipIfNeeded(context);
@@ -45,9 +44,16 @@ public class StoreController {
         completeTransaction(context);
     }
 
-    private PurchaseContext createPurchaseContext(List<OrderItem> items) {
-        LocalDate today = DateTimes.now().toLocalDate();
-        return store.processPurchase(items, today);
+    private PurchaseContext createPurchaseContext() {
+        while (true) {
+            try {
+                List<OrderItem> items = InputView.readOrderItems();
+                LocalDate today = DateTimes.now().toLocalDate();
+                return store.processPurchase(items, today);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     private void handlePromotionQuestions(PurchaseContext context) {
