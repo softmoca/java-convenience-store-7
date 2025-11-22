@@ -20,7 +20,6 @@ public class StoreController {
     private ConvenienceStore store;
 
     public void run() {
-
         store = StoreInitializer.initialize();
 
         do {
@@ -74,10 +73,9 @@ public class StoreController {
 
             //  추가 구매 제안
             if (result.shouldSuggestAddition()) {
-                boolean accept = InputView.readYesNo(result.getSuggestedMessage());
+                boolean accept = InputView.readSuggestYesNo(result);
 
                 if (accept) {
-                    // 추가 구매 수락 → 수량 증가
                     PurchaseResult newResult = result.acceptAddition();
                     context.updatePurchase(product, newResult);
                 }
@@ -85,7 +83,7 @@ public class StoreController {
 
             //  정가 결제 확인
             else if (result.requiresFullPrice()) {
-                boolean accept = InputView.readYesNo(result.getFullPriceMessage());
+                boolean accept = InputView.readFullPricYesNo(result);
 
                 if (!accept) {
                     // 정가 결제 거부 → 수량 감소

@@ -61,7 +61,7 @@ public class ConvenienceStore {
     }
 
 
-    public void validateProducts(List<OrderItem> items) {
+    private void validateProducts(List<OrderItem> items) {
         for (OrderItem item : items) {
             validateProductExists(item);
         }
