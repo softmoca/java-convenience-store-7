@@ -9,67 +9,101 @@ import store.domain.entity.Product;
 import store.domain.vo.Promotion;
 
 public final class FileParser {
-
     private FileParser() {
     }
 
     public static List<Promotion> parsePromotions(String content) {
-        List<Promotion> promotions = new ArrayList<>();
         String[] lines = content.split("\n");
+        return parsePromotionLines(lines);
+    }
+
+    private static List<Promotion> parsePromotionLines(String[] lines) {
+        List<Promotion> promotions = new ArrayList<>();
 
         for (int i = 1; i < lines.length; i++) {
-            String line = lines[i].trim();
-            if (line.isEmpty()) {
-                continue;
-            }
-
-            String[] parts = line.split(",");
-            promotions.add(new Promotion(
-                    parts[0],  // name
-                    Integer.parseInt(parts[1]),  // buy
-                    Integer.parseInt(parts[2]),  // get
-                    LocalDate.parse(parts[3]),   // startDate
-                    LocalDate.parse(parts[4])    // endDate
-            ));
+            addPromotionIfValid(lines[i], promotions);
         }
 
         return promotions;
     }
 
-    public static Map<String, Product> parseProducts(String content, Map<String, Promotion> promotionMap) {
-        Map<String, Product> products = new LinkedHashMap<>();
-        String[] lines = content.split("\n");
+    private static void addPromotionIfValid(String line, List<Promotion> promotions) {
+        Promotion promotion = parsePromotionLine(line);
+        promotions.add(promotion);
+    }
 
+    private static Promotion parsePromotionLine(String line) {
+        String[] parts = line.split(",");
+        return createPromotion(parts);
+    }
+
+    private static Promotion createPromotion(String[] parts) {
+        return new Promotion(
+                parts[0],
+                Integer.parseInt(parts[1]),
+                Integer.parseInt(parts[2]),
+                LocalDate.parse(parts[3]),
+                LocalDate.parse(parts[4])
+        );
+    }
+
+    public static Map<String, Product> parseProducts(String content, Map<String, Promotion> promotionMap) {
+        String[] lines = content.split("\n");
         Map<String, ProductBuilder> builders = new LinkedHashMap<>();
 
+        parseProductLines(lines, builders, promotionMap);
+
+        return buildProducts(builders);
+    }
+
+    private static void parseProductLines(String[] lines, Map<String, ProductBuilder> builders,
+                                          Map<String, Promotion> promotionMap) {
         for (int i = 1; i < lines.length; i++) {
-            String line = lines[i].trim();
-            if (line.isEmpty()) {
-                continue;
-            }
+            processProductLine(lines[i], builders, promotionMap);
+        }
+    }
 
-            String[] parts = line.split(",");
-            String name = parts[0];
-            int price = Integer.parseInt(parts[1]);
-            int quantity = Integer.parseInt(parts[2]);
-            String promotionName = parts[3];
+    private static void processProductLine(String line, Map<String, ProductBuilder> builders,
+                                           Map<String, Promotion> promotionMap) {
 
-            // 이미 있는 상품이면 재고만 추가
-            ProductBuilder builder = builders.computeIfAbsent(name,
-                    k -> new ProductBuilder(name, price));
+        String[] parts = line.split(",");
+        addProductData(parts, builders, promotionMap);
+    }
 
-            if (!"null".equals(promotionName)) {         // 프로모션 재고
-                builder.setPromotionStock(quantity);
-                builder.setPromotion(promotionMap.get(promotionName));
-            } else {            // 일반 재고
-                builder.setRegularStock(quantity);
-            }
+    private static void addProductData(String[] parts, Map<String, ProductBuilder> builders,
+                                       Map<String, Promotion> promotionMap) {
+        String name = parts[0];
+        int price = Integer.parseInt(parts[1]);
+        int quantity = Integer.parseInt(parts[2]);
+        String promotionName = parts[3];
+
+        ProductBuilder builder = getOrCreateBuilder(builders, name, price);
+        applyStockToBuilder(builder, quantity, promotionName, promotionMap);
+    }
+
+    private static ProductBuilder getOrCreateBuilder(Map<String, ProductBuilder> builders,
+                                                     String name, int price) {
+        return builders.computeIfAbsent(name, k -> new ProductBuilder(name, price));
+    }
+
+    private static void applyStockToBuilder(ProductBuilder builder, int quantity,
+                                            String promotionName, Map<String, Promotion> promotionMap) {
+        if (isNullPromotion(promotionName)) {
+            builder.setRegularStock(quantity);
+            return;
         }
 
-        builders.forEach((name, builder) -> {
-            products.put(name, builder.build());
-        });
+        builder.setPromotionStock(quantity);
+        builder.setPromotion(promotionMap.get(promotionName));
+    }
 
+    private static boolean isNullPromotion(String promotionName) {
+        return "null".equals(promotionName);
+    }
+
+    private static Map<String, Product> buildProducts(Map<String, ProductBuilder> builders) {
+        Map<String, Product> products = new LinkedHashMap<>();
+        builders.forEach((name, builder) -> products.put(name, builder.build()));
         return products;
     }
 
@@ -98,11 +132,14 @@ public final class FileParser {
         }
 
         Product build() {
-            if (promotion != null) {
+            if (hasPromotion()) {
                 return new Product(name, price, promotionStock, regularStock, promotion);
             }
             return new Product(name, price, promotionStock, regularStock);
         }
-    }
 
+        private boolean hasPromotion() {
+            return promotion != null;
+        }
+    }
 }
