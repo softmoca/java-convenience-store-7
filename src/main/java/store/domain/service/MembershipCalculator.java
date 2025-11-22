@@ -13,27 +13,48 @@ public class MembershipCalculator {
 
     public static int calculateDiscount(Map<Product, PurchaseResult> purchases) {
         int eligibleAmount = calculateEligibleAmount(purchases);
-        int discount = (int) (eligibleAmount * DISCOUNT_RATE);
+        return applyDiscountLimit(eligibleAmount);
+    }
 
+    private static int applyDiscountLimit(int eligibleAmount) {
+        int discount = (int) (eligibleAmount * DISCOUNT_RATE);
         return Math.min(discount, MAX_DISCOUNT);
     }
 
     private static int calculateEligibleAmount(Map<Product, PurchaseResult> purchases) {
-        int total = 0;
+        return purchases.entrySet().stream()
+                .mapToInt(entry -> calculateSingleProductEligibleAmount(
+                        entry.getKey(), entry.getValue()
+                ))
+                .sum();
+    }
 
-        for (Map.Entry<Product, PurchaseResult> entry : purchases.entrySet()) {
-            Product product = entry.getKey();
-            PurchaseResult result = entry.getValue();
-
-            if (result.getFreeQuantity() == 0) {
-                // 프로모션이 없는 상품
-                total += product.getPrice() * result.getPayQuantity();
-            } else if (result.requiresFullPrice()) {
-                // 프로모션 재고 부족으로 정가 결제하는 부분
-                total += product.getPrice() * result.getFullPriceQuantity();
-            }
+    private static int calculateSingleProductEligibleAmount(Product product, PurchaseResult result) {
+        if (hasNoPromotion(result)) {
+            return calculateNonPromotionAmount(product, result);
         }
 
-        return total;
+        if (requiresPartialFullPrice(result)) {
+            return calculateFullPriceAmount(product, result);
+        }
+
+        return 0;
     }
+
+    private static boolean hasNoPromotion(PurchaseResult result) {
+        return result.getFreeQuantity() == 0;
+    }
+
+    private static boolean requiresPartialFullPrice(PurchaseResult result) {
+        return result.requiresFullPrice();
+    }
+
+    private static int calculateNonPromotionAmount(Product product, PurchaseResult result) {
+        return product.getPrice() * result.getPayQuantity();
+    }
+
+    private static int calculateFullPriceAmount(Product product, PurchaseResult result) {
+        return product.getPrice() * result.getFullPriceQuantity();
+    }
+
 }
