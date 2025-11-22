@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import store.domain.entity.Product;
 import store.domain.vo.OrderItem;
 import store.domain.vo.Promotion;
+import store.domain.vo.PurchaseResult;
 
 class ConvenienceStoreTest {
 
@@ -92,6 +93,46 @@ class ConvenienceStoreTest {
         assertThatThrownBy(() -> store.processPurchase(items, today))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다");
+    }
+
+    @Test
+    void 여러_상품_동시_구매() {
+        // given
+        List<OrderItem> items = List.of(
+                new OrderItem("콜라", 6),      // 2+1 프로모션
+                new OrderItem("오렌지주스", 2), // 1+1 프로모션
+                new OrderItem("물", 3),         // 프로모션 없음
+                new OrderItem("에너지바", 2)    // 프로모션 없음
+        );
+
+        // when
+        PurchaseContext context = store.processPurchase(items, today);
+
+        // then
+        Map<Product, PurchaseResult> purchases = context.getPurchases();
+        assertThat(purchases).hasSize(4);
+
+        // 각 상품별 검증
+        assertThat(context.calculateTotalAmount()).isEqualTo(11300); // 4000 + 1800 + 1500 + 4000
+        assertThat(context.calculatePromotionDiscount()).isEqualTo(3800); // 콜라 2000 + 오렌지주스 1800
+    }
+
+    @Test
+    void 프로모션_재고_부족시_일반_재고_사용() {
+        // given
+        List<OrderItem> items = List.of(new OrderItem("콜라", 15)); // 프로모션 재고 10, 일반 재고 10
+
+        // when
+        PurchaseContext context = store.processPurchase(items, today);
+
+        // then
+        Map<Product, PurchaseResult> purchases = context.getPurchases();
+        PurchaseResult colaResult = purchases.values().iterator().next();
+
+        // 9개는 프로모션(6개 결제 + 3개 무료), 6개는 정가
+        assertThat(colaResult.getFreeQuantity()).isEqualTo(3);
+        assertThat(colaResult.requiresFullPrice()).isTrue();
+        assertThat(colaResult.getFullPriceQuantity()).isEqualTo(6);
     }
 
 
