@@ -135,5 +135,19 @@ class ConvenienceStoreTest {
         assertThat(colaResult.getFullPriceQuantity()).isEqualTo(6);
     }
 
+    @Test
+    void 재고_완전_소진_후_재구매_불가() {
+        // given
+        List<OrderItem> firstPurchase = List.of(new OrderItem("에너지바", 5));
+        PurchaseContext firstContext = store.processPurchase(firstPurchase, today);
+        store.updateStock(firstContext);
+
+        // when & then
+        List<OrderItem> secondPurchase = List.of(new OrderItem("에너지바", 1));
+        assertThatThrownBy(() -> store.processPurchase(secondPurchase, today))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 재고 수량을 초과");
+    }
+
 
 }
