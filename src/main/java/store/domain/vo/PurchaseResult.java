@@ -72,10 +72,6 @@ public class PurchaseResult {
     }
 
     public PurchaseResult acceptAddition() {
-        if (!suggestAddition) {
-            return this;  // 제안이 없었으면 그대로 반환
-        }
-
         int newQuantity = requestedQuantity + suggestedAddition;  // 총 수량 증가
         return new Builder(productName, newQuantity)
                 .payQuantity(payQuantity)                            // 결제 수량은 그대로
@@ -84,10 +80,6 @@ public class PurchaseResult {
     }
 
     public PurchaseResult rejectFullPrice() {
-        if (!requiresFullPrice) {
-            return this;  // 정가 결제가 없었으면 그대로 반환
-        }
-
         int newQuantity = requestedQuantity - fullPriceQuantity;  // 정가 부분 제외
         return new Builder(productName, newQuantity)
                 .payQuantity(payQuantity - fullPriceQuantity)        // 결제 수량 감소
