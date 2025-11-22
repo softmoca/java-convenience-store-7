@@ -55,13 +55,29 @@ public class Product {
     }
 
     public void deductStock(int quantity) {
-        if (promotionStock >= quantity) { // 프로모션 재고 부터 차감
-            promotionStock -= quantity;
-        } else {
-            int remaining = quantity - promotionStock;
-            promotionStock = 0;
-            regularStock -= remaining;
+        if (canDeductFromPromotionOnly(quantity)) {
+            deductFromPromotionStock(quantity);
+            return;
         }
+
+        deductFromBothStocks(quantity);
     }
 
+    private boolean canDeductFromPromotionOnly(int quantity) {
+        return promotionStock >= quantity;
+    }
+
+    private void deductFromPromotionStock(int quantity) {
+        promotionStock -= quantity;
+    }
+
+    private void deductFromBothStocks(int quantity) {
+        int remainingAfterPromotion = calculateRemainingQuantity(quantity);
+        promotionStock = 0;
+        regularStock -= remainingAfterPromotion;
+    }
+
+    private int calculateRemainingQuantity(int quantity) {
+        return quantity - promotionStock;
+    }
 }
