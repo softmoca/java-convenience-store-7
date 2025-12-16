@@ -50,7 +50,7 @@ class ApplicationTest extends NsTest {
         assertNowTest(() -> {
             run("[감자칩-2]", "N", "N");
             assertThat(output().replaceAll("\\s", "")).contains("내실돈3,000");
-        }, LocalDate.of(2024, 2, 1).atStartOfDay());
+        }, LocalDate.of(2025, 2, 1).atStartOfDay());
     }
 
     @Test
